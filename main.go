@@ -19,6 +19,9 @@ func newHandler() http.Handler {
 	mux.HandleFunc("DELETE /flags/{key}", httpapi.DeleteHandler(s))
 	mux.HandleFunc("GET /flags/{key}/evaluate", httpapi.EvaluateHandler(s))
 	mux.HandleFunc("GET /healthz", httpapi.HealthzHandler())
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		httpapi.WriteError(w, http.StatusNotFound, "not found")
+	})
 
 	return httpapi.LoggingMiddleware(mux)
 }
