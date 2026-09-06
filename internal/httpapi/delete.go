@@ -6,10 +6,16 @@ import (
 	"featureflags/internal/store"
 )
 
-// DeleteHandler handles DELETE /flags/{key}. Scaffold stub: 501 until the
-// delete ticket fills it in.
+// DeleteHandler handles DELETE /flags/{key}. It removes the flag with the
+// given key and answers 204 on success, or 404 with a JSON error object when
+// no such flag exists.
 func DeleteHandler(s *store.Store) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		WriteError(w, http.StatusNotImplemented, "not implemented")
+		key := r.PathValue("key")
+		if !s.Delete(key) {
+			WriteError(w, http.StatusNotFound, "flag not found")
+			return
+		}
+		w.WriteHeader(http.StatusNoContent)
 	}
 }
